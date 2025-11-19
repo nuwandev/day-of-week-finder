@@ -9,23 +9,23 @@ mInput.value = date.getMonth() + 1;
 dInput.value = date.getDate();
 
 const findDay = () => {
-  const y = Number(yInput.value);
-  const m = Number(mInput.value);
-  const d = Number(dInput.value);
+  const y = Number(yInput.value.trim());
+  const m = Number(mInput.value.trim());
+  const d = Number(dInput.value.trim());
 
   // Error handling
   result.style.color = "red";
-  if (!y) {
+  if (isNaN(y)) {
     result.innerText = "Year is required!";
     return;
   }
 
-  if (!m) {
+  if (isNaN(m)) {
     result.innerText = "Month is required!";
     return;
   }
 
-  if (!d) {
+  if (isNaN(d)) {
     result.innerText = "Date is required!";
     return;
   }
@@ -35,33 +35,37 @@ const findDay = () => {
     return;
   }
 
-  if (m < 0 || m > 12) {
+  if (m < 1 || m > 12) {
     result.innerText = "Invalid Month!";
     return;
   }
 
-  if (d < 0 || d > 31) {
+  if (d < 1 || d > 31) {
     result.innerText = "Invalid Date!";
     return;
   }
 
-  // given logics in the assignment instructions
-  const yO = Math.floor(y - (14 - m) / 12);
-  const x = Math.floor(yO + yO / 4 - yO / 100 + yO / 400);
-  const mO = Math.floor(m + 12 * ((14 - m) / 12) - 2);
-  const dO = Math.floor((d + x + (31 * mO) / 12) % 7);
+  if (d > new Date(y, m, 0).getDate()) {
+    result.innerText = "Invalid day for this month!";
+    return;
+  }
 
-  // manually typed because the instructions haven't gave 0 for friday etc...
+  const yO = y - Math.floor((14 - m) / 12);
+  const x = Math.floor(yO + yO / 4 - yO / 100 + yO / 400);
+  const mO = m + 12 * Math.floor((14 - m) / 12) - 2;
+  const dO = (((d + x + Math.floor((31 * mO) / 12)) % 7) + 7) % 7;
+  const dayIndex = ((dO % 7) + 7) % 7;
+
   const days = [
-    "Friday", // 0
-    "Saturday", // 1
-    "Sunday", // 2
-    "Monday", // 3
-    "Tuesday", // 4
-    "Wednesday", // 5
-    "Thursday", // 6
+    "Friday",
+    "Saturday",
+    "Sunday",
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
   ];
 
   result.style.color = "black";
-  result.innerText = `Day of the week is ${days[dO]}`;
+  result.innerText = `Day of the week is ${days[dayIndex]}`;
 };

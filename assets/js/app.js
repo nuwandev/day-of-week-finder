@@ -50,22 +50,25 @@ const findDay = () => {
     return;
   }
 
-  const yO = y - Math.floor((14 - m) / 12);
-  const x = Math.floor(yO + yO / 4 - yO / 100 + yO / 400);
-  const mO = m + 12 * Math.floor((14 - m) / 12) - 2;
-  const dO = (((d + x + Math.floor((31 * mO) / 12)) % 7) + 7) % 7;
-  const dayIndex = ((dO % 7) + 7) % 7;
+  const dateObj = new Date(y, m - 1, d);
+
+  if (dateObj.getMonth() !== m - 1 || dateObj.getDate() !== d) {
+    result.style.color = "red";
+    result.innerText = "Invalid date!";
+    return;
+  }
 
   const days = [
-    "Friday",
-    "Saturday",
     "Sunday",
     "Monday",
     "Tuesday",
     "Wednesday",
     "Thursday",
+    "Friday",
+    "Saturday",
   ];
 
-  result.style.color = "black";
-  result.innerText = `Day of the week is ${days[dayIndex]}`;
+  const dayIndex = dateObj.getDay();
+  result.style.color = "#202124";
+  result.innerText = `The day is ${days[dayIndex]}`;
 };
